@@ -1,40 +1,40 @@
 import scala.io.Source
 import java.io.File
 
-
-
 object CcWc {
   val man = """
     Usage: 
     -c retrieve number of bytes of file
     -l number of lines
+    -w number of words
   """
 
   def main(args: Array[String]): Unit = {
     if (args.length == 0) println(man)
 
-    def nextArg(map: Map[String, Any], list: List[String]): Map[String, Any] = {
-      list match {
-        case Nil => map
-        case "-c" :: value :: tail =>
-          countBytes(value)
-          nextArg(map ++ Map("byteSize" -> value), tail)
-        case "-l" :: value :: tail =>
-          countLine(value)
-          nextArg(map ++ Map("lineCount" -> value), tail)
-        case "-w" :: value :: tail =>
-          countWords(value)
-          nextArg(map ++ Map("wordCount" -> value), tail)
-        case string :: Nil =>
-          nextArg(map ++ Map("filename" -> string), list.tail)
-        case unknown :: _ =>
-          println("Unknown option " + unknown)
-          sys.exit(1)
-      }
-    }
     val options = nextArg(Map(), args.toList)
     // println(options)
 
+  }
+
+  def nextArg(map: Map[String, Any], list: List[String]): Map[String, Any] = {
+    list match {
+      case Nil => map
+      case "-c" :: value :: tail =>
+        countBytes(value)
+        nextArg(map ++ Map("byteSize" -> value), tail)
+      case "-l" :: value :: tail =>
+        countLine(value)
+        nextArg(map ++ Map("lineCount" -> value), tail)
+      case "-w" :: value :: tail =>
+        countWords(value)
+        nextArg(map ++ Map("wordCount" -> value), tail)
+      case string :: Nil =>
+        nextArg(map ++ Map("filename" -> string), list.tail)
+      case unknown :: _ =>
+        println("Unknown option " + unknown)
+        sys.exit(1)
+    }
   }
 
   def countBytes(filename: String): Unit = {
